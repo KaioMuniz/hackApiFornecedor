@@ -7,11 +7,11 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -37,9 +37,11 @@ public class Empresa {
     @Column(name = "telefone", nullable = false)
     private String telefone;
     
-    @OneToMany
-    @JoinColumn
+    @OneToMany(mappedBy = "empresa")
     private List<Cotacao>  cotacoes;
+    
+    @Embedded
+    private Endereco endereco;
     
     private UUID usuarioId;
     

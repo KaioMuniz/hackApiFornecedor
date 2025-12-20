@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Painel Web
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    networks:
+      - backend
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"    # SMTP
+      - "8025:8025"    # Interface Web
+    restart: unless-stopped
+    networks:
+      - backend
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  backend:
+    external: true
+    name: shared_backend

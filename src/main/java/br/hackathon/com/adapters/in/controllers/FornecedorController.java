@@ -12,14 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.hackathon.com.adapters.dtos.CadastrarFornecedorRequest;
 import br.hackathon.com.adapters.dtos.CadastroFornecedorResponse;
+import br.hackathon.com.adapters.dtos.NegociarCotacaoRequest;
+import br.hackathon.com.adapters.dtos.NegociarSolicitacaoResponse;
 import br.hackathon.com.adapters.dtos.SolicitarCotacaoRequest;
 import br.hackathon.com.adapters.dtos.SolicitarCotacaoResponse;
 import br.hackathon.com.application.components.JwtTokenComponent;
 import br.hackathon.com.application.ports.FornecedorService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/funcionario")
+@RequiredArgsConstructor
 public class FornecedorController {
 
 	@Autowired FornecedorService service;
@@ -33,9 +37,17 @@ public class FornecedorController {
 		
 	}
 	
-	public ResponseEntity<SolicitarCotacaoResponse> solicitarCotacao(@PathVariable UUID id,@RequestBody SolicitarCotacaoRequest request, HttpServletRequest http) {
+	@PostMapping("/solicitar/cotacao/{id}")
+	public ResponseEntity<SolicitarCotacaoResponse> solicitarCotacao(@PathVariable UUID id,
+			@RequestBody SolicitarCotacaoRequest request, HttpServletRequest http) {
 		
 		return ResponseEntity.ok(service.solicitarCotacao(id, request, getUsuarioId(http)));
+	}
+	
+	@PostMapping("/negociar/cotacao/{id}")
+	public ResponseEntity<NegociarSolicitacaoResponse> negociarCotacao(@PathVariable UUID id,
+			@RequestBody NegociarCotacaoRequest request, HttpServletRequest http ) {
+		return ResponseEntity.ok(service.negociarCotacao(id, request, getUsuarioId(http)));
 	}
 	
 	private UUID getUsuarioId(HttpServletRequest request) {
