@@ -13,8 +13,10 @@ import br.hackathon.com.adapters.dtos.NegociarSolicitacaoResponse;
 import br.hackathon.com.adapters.dtos.SolicitarCotacaoRequest;
 import br.hackathon.com.adapters.dtos.SolicitarCotacaoResponse;
 import br.hackathon.com.adapters.out.CotacaoRepository;
+import br.hackathon.com.adapters.out.EmpresaRepository;
 import br.hackathon.com.adapters.out.FornecedorRepository;
 import br.hackathon.com.adapters.out.PropostaRepository;
+import br.hackathon.com.application.components.MailSenderComponent;
 import br.hackathon.com.application.ports.FornecedorService;
 import br.hackathon.com.domain.exceptions.CotacaoNaoEncontradaException;
 import br.hackathon.com.domain.exceptions.FornecedorJaCadastradoException;
@@ -31,6 +33,8 @@ public class FornecedorServiceImpl implements FornecedorService {
 	@Autowired CotacaoRepository cotacaoRepository;
 	@Autowired FornecedorRepository fornecedorRepository;
 	@Autowired PropostaRepository propostaRepository;
+	@Autowired EmpresaRepository empresaRepository;
+	@Autowired MailSenderComponent mailSender;
 	
 	@Override
 	public SolicitarCotacaoResponse solicitarCotacao(UUID id, SolicitarCotacaoRequest request, UUID usuarioId) {
@@ -55,6 +59,9 @@ public class FornecedorServiceImpl implements FornecedorService {
 
 		    // SALVA SOMENTE O LADO DONO
 		    cotacaoRepository.save(cotacao);
+		    
+		    var emailEmpresa = cotacao.getEmpresa().getEmail();
+		    sendEmailSolicitandoCotacao(emailEmpresa);
 
 		    SolicitarCotacaoResponse resp = new SolicitarCotacaoResponse();
 		    resp.setIdCotacao(id);
@@ -82,7 +89,10 @@ public class FornecedorServiceImpl implements FornecedorService {
 		cotacao.getPropostas().add(proposta);
 		cotacaoRepository.save(cotacao);
 		
+		
+		
 		var resp = new NegociarSolicitacaoResponse();
+		
 		
 		resp.setId(cotacao.getId());
 		
@@ -144,5 +154,77 @@ public class FornecedorServiceImpl implements FornecedorService {
 				.toList();
 	}
 	
+	
+	public void sendEmailSolicitandoCotacao(String email) {
+		var to = email;
+		var subject = "Solicitaram a sua cotação!";
+		var body = """
+				<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dddddd;
+        }
+        .header {
+            background-color: #f39c12; /* Laranja: Solicitação Interna */
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+            color: #333333;
+        }
+        .request-card {
+            background-color: #fffaf0;
+            border: 1px solid #f39c12;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            color: #777777;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #f39c12;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0; font-size: 20px;">Nova Solicitação de Cotação</h1>
+        </div>
+        <div class="content">
+            <p>Olá, <strong>Equipe de Suprimentos</strong>,</p>
+            <p>Um colaborador enviou uma nova requisição de compra e
+				""";
+		
+		mailSender.send(to, subject, body, true);
+	}
 	
 }
