@@ -23,6 +23,7 @@ import br.hackathon.com.domain.exceptions.RecursoNaoAutorizadoException;
 import br.hackathon.com.domain.models.Endereco;
 import br.hackathon.com.domain.models.Fornecedor;
 import br.hackathon.com.domain.models.Proposta;
+import br.hackathon.com.domain.models.StatusCotacao;
 
 @Service
 public class FornecedorServiceImpl implements FornecedorService {
@@ -37,8 +38,12 @@ public class FornecedorServiceImpl implements FornecedorService {
 		var fornecedor = fornecedorRepository.findByUsuarioId(usuarioId).orElseThrow(() -> new FornecedorNaoEncontradoException());
 		var cotacao = cotacaoRepository.findById(id).orElseThrow(() -> new CotacaoNaoEncontradaException());
 		
+		 if(cotacao.getStatus().equals(StatusCotacao.CANCELADA) || cotacao.getStatus().equals(StatusCotacao.ENCERRADA)) {
+			 throw new RecursoNaoAutorizadoException();
+		 }
+		
 		 if (!cotacao.getFornecedores().contains(fornecedor)) {
-		        cotacao.getFornecedores().add(fornecedor);
+		        cotacao.getFornecedores() .add(fornecedor);
 		    }
 
 		    Proposta proposta = new Proposta();
