@@ -1,14 +1,15 @@
 package br.hackathon.com.configurations;
 
-import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
-public class RabbitMQConfig {
+public class ObjectMapperConfig {
 
 	@Bean
-	public Queue queue() {
-		return new Queue("",true);
+	public ObjectMapper mapper() {
+		return new ObjectMapper();
 	}
 }

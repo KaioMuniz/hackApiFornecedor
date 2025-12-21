@@ -26,7 +26,7 @@ public class Fornecedor {
 	private String telefone;
 	@Embedded
 	private Endereco endereco;
-	private List<String> contatos;
+	private List<String> contatos = new ArrayList<>();
 
 	@ManyToMany(mappedBy = "fornecedores")
 	private 	List<Cotacao> cotacoes = new ArrayList<>();

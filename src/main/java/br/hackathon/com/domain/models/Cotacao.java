@@ -44,6 +44,8 @@ public class Cotacao {
 
 	@Enumerated(EnumType.STRING)
 	private StatusCotacao status = StatusCotacao.ABERTA;
+	
+	private UUID vencedorId;
 
 	@Column(columnDefinition = "TEXT")
 	private String descricaoItens;
