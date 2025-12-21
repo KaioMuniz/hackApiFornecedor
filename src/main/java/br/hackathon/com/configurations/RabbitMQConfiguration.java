@@ -11,4 +11,9 @@ public class RabbitMQConfiguration {
 	public Queue queue() {
 		return new Queue("cotacoes_encerradas",true);
 	}
+	
+	@Bean
+	public Queue newQueue() {
+		return new Queue("convites_fornecedores",true);
+	}
 }

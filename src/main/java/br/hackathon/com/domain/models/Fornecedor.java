@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -30,6 +31,8 @@ public class Fornecedor {
 
 	@ManyToMany(mappedBy = "fornecedores")
 	private 	List<Cotacao> cotacoes = new ArrayList<>();
+	@OneToMany(mappedBy = "fornecedor")
+	private List<Proposta> propostas = new ArrayList<>();
 	private UUID usuarioId;
 	
 }

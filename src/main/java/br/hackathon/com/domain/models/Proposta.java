@@ -24,6 +24,9 @@ public class Proposta {
 	@ManyToOne
 	@JoinColumn(name = "cotacao_id", nullable = false)
 	private Cotacao cotacao;
+	@ManyToOne
+	@JoinColumn(name = "fornecedor_id", nullable = false)
+	private Fornecedor fornecedor;
 	
 	private UUID usuarioId;
 }

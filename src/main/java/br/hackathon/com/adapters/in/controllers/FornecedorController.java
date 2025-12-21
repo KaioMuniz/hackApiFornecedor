@@ -1,9 +1,11 @@
 package br.hackathon.com.adapters.in.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +20,12 @@ import br.hackathon.com.adapters.dtos.SolicitarCotacaoRequest;
 import br.hackathon.com.adapters.dtos.SolicitarCotacaoResponse;
 import br.hackathon.com.application.components.JwtTokenComponent;
 import br.hackathon.com.application.ports.FornecedorService;
+import br.hackathon.com.domain.models.Fornecedor;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/funcionario")
+@RequestMapping("/api/v1/fornecedor")
 @RequiredArgsConstructor
 public class FornecedorController {
 
@@ -35,6 +38,12 @@ public class FornecedorController {
 		
 		return ResponseEntity.ok(service.cadastrarFornecedor(request, getUsuarioId(http)));
 		
+	}
+	
+	@GetMapping("all")
+	public ResponseEntity<List<Fornecedor>> listFornecedores(HttpServletRequest http) {
+		
+		return ResponseEntity.ok(service.listAll(getUsuarioId(http)));
 	}
 	
 	@PostMapping("/solicitar/cotacao/{id}")

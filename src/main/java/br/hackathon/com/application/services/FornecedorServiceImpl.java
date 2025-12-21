@@ -108,6 +108,7 @@ public class FornecedorServiceImpl implements FornecedorService {
 		fornecedor.setNome(request.getNome());
 		fornecedor.setTelefone(request.getTelefone());
 		fornecedor.setUsuarioId(usuarioId);
+		fornecedor.setPropostas(List.of());
 		
 		var endereco = new Endereco();
 		endereco.setBairro(request.getEndereco().getBairro());
@@ -135,6 +136,13 @@ public class FornecedorServiceImpl implements FornecedorService {
 		return resp;
 	}
 
+	public List<Fornecedor> listAll(UUID usuarioId) {
+		
+		var fornecedores = fornecedorRepository.findAll();
+		
+		return fornecedores.stream()
+				.toList();
+	}
 	
 	
 }
